@@ -6,8 +6,16 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
+from pymongo import MongoClient
 
 
 class QuotesPipeline:
+    def open_spider(self, spider):
+        self.client = MongoClient('localhost', 27017)
+        self.db = self.client['parsing_lesson_6']
+
     def process_item(self, item, spider):
-        return item
+        self.db['products'].insert_one(item)
+
+    def close_spider(self, spider):
+        self.client.close()
